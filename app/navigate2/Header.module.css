@@ -1,0 +1,78 @@
+/* 基本样式 */
+.navbar {
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.brandTitle {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* 汉堡菜单样式 */
+.toggleButton {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 21px;
+    height: 21px;
+}
+
+.toggleButton .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+}
+
+/* 导航链接样式 */
+.navbarLinks ul {
+    list-style: none;
+    display: flex;
+}
+
+.navbarLinks ul li {
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.navbarLinks ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 768px) {
+    .toggleButton {
+        display: flex;
+    }
+
+    .navbarLinks {
+        display: none;
+        width: 100%;
+    }
+
+    .navbarLinks ul {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .navbarLinks ul li {
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .navbarLinks ul li a {
+        width: 100%;
+    }
+
+    .navbarLinks.active {
+        display: flex;
+    }
+}

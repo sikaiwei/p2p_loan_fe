@@ -8,8 +8,10 @@ export default function Navigate() {
 
     return (
         <nav className="navbar">
+        <div className="brandTitle">P2P Loan Platform</div>
+
         <ul className="nav-list">
-            <li><Link href="/" >产品中心</Link></li>
+            <li><Link href="/" >首页</Link></li>
             <li><Link href="/loanform" >筹款广场</Link></li>
             <li><Link href="#" >交易大厅</Link></li>
             <li><Link href="/about" >关于我们</Link></li>
