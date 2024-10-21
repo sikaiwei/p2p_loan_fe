@@ -56,7 +56,7 @@ export default function Vote() {
                                 console.log(candidateName)
                                 await addCandidate(candidateName);
                             }} 
-                        type="primary" size="large">
+                        type="primary" size="middle">
                         添加
                     
                     </Button>
@@ -74,7 +74,7 @@ export default function Vote() {
                             async ()=>{
                                 await vote(candidateId);
                             }} 
-                        type="primary" size="large">
+                        type="primary" size="middle">
                         投票
                     
                     </Button>
@@ -86,7 +86,7 @@ export default function Vote() {
                             async ()=>{
                                 await getAllCandidates();
                             }} 
-                        type="primary" size="large">
+                        type="primary" size="middle">
                         刷新数据
                     
                     </Button>
