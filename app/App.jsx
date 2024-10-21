@@ -2,6 +2,7 @@
 import { useWeb3React } from '@web3-react/core';
 import { useEffect } from 'react';
 import { useContract } from './useContract';
+import { Input, label, Button, Tooltip } from "antd";
 
 function App() {
   const { isActive, account,  connector,  provider } = useWeb3React();
@@ -16,14 +17,15 @@ function App() {
   },[provider,connector,account])
 
   return (
-    <>
+    <>账户连接状态：
     {isActive ? ('active') : ('not active')}
-    <button onClick={async ()=>{
+    <Button onClick={async ()=>{
       await connector.activate();
       console.log("active",provider);
-    }}>
-      connect
-    </button>
+    }}
+    type="primary" size="middle">
+      connect your wallet
+    </Button>
 
     <button onClick={async ()=>{
       await approve();

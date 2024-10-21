@@ -8,10 +8,11 @@ import styles from "./page.module.css";
 import { Input, label, Button, Tooltip } from "antd";
 import { Web3Provider } from '../Web3Provider.jsx'
 import { useContract } from '../useContract';
+import Navigate from '../navigate/navigate';
 
 
-
-export default function Vote() {
+function Vote_o() {
+// export default function Vote() {
 
     const [candidateName, setcandidateName] = useState("");
     const [candidateId, setcandidateId] = useState(-1);
@@ -32,14 +33,12 @@ export default function Vote() {
       }; 
   
     return (
+        <Web3Provider>
+            <Navigate/>
         <div className={styles.page}>
         <main className={styles.main}>
-        <Web3Provider>
 
-            <Link href="/" className="">
-            HOME
-            </Link>
-            <h1>vote</h1>
+            <h1>Loan</h1>
             <label>
             <p>======================================</p>
 
@@ -94,8 +93,16 @@ export default function Vote() {
                 <ListComponent data={voteRes} />  
                 </label>
 
-        </Web3Provider>
         </main>
         </div>
+        </Web3Provider>
     )  
+}
+
+export default function Vote() {
+    return (
+        <Web3Provider>
+            <Vote_o/>
+        </Web3Provider>
+)  
 }
