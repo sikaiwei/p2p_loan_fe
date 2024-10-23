@@ -38,6 +38,14 @@ export default function Navigate() {
         }
     }, []);
 
+    const linksMap = {
+        0: "/",
+        1: "/loanform",
+        2: "/",
+        3: "/about",
+        4: "/",
+      };
+
     const handleLinkClick = (index) => {
         setActiveIndex(index); // 更新激活的导航项索引
         localStorage.setItem('activeIndex', index); // 将索引存储到 localStorage
@@ -47,9 +55,9 @@ export default function Navigate() {
         <nav className={styles.navbar}>
             <div className={styles.brandTitle}>P2P Loan Platform</div>
             <ul className={styles.navList}>
-                {["首页", "筹款广场", "交易大厅", "关于我们", "新闻资讯", "下载 APP"].map((item, index) => (
+                {["首页", "筹款广场", "交易大厅", "关于我们", "公告"].map((item, index) => (
                     <li key={index}>
-                        <Link href={index === 0 ? "/" : index === 1 ? "/loanform" : "#"}>
+                        <Link href={linksMap[index]}>
                             < p
                                 className={activeIndex === index ? styles.activeLink : ''} 
                                 onClick={() => handleLinkClick(index)}
