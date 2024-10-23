@@ -3,10 +3,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import App from './App.jsx';
 import Navigate from './navigate/navigate';
-import Head from 'next/head';
-import Header from './navigate2/navigate';
 
-import Link from 'next/link'
 
 
 import { Web3Provider } from './Web3Provider.jsx'
@@ -14,7 +11,6 @@ import { Web3Provider } from './Web3Provider.jsx'
 export default function Home() {
   return (
         <Web3Provider>
-
 
           <Navigate/>
     <div className={styles.page}>
