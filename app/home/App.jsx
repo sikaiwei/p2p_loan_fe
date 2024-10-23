@@ -17,41 +17,42 @@ function App() {
   },[provider,connector,account])
 
   return (
-    <>账户连接状态：
-    {isActive ? ('active') : ('not active')}
-    <Button onClick={async ()=>{
-      await connector.activate();
-      console.log("active",provider);
-    }}
-    type="primary" size="middle">
-      connect your wallet
-    </Button>
+    <></>
+    // <>账户连接状态：
+    // {isActive ? ('active') : ('not active')}
+    // <Button onClick={async ()=>{
+    //   await connector.activate();
+    //   console.log("active",provider);
+    // }}
+    // type="primary" size="middle">
+    //   connect your wallet
+    // </Button>
 
-    <button onClick={async ()=>{
-      await approve();
-    }}>
-      approve
-    </button>
+    // <button onClick={async ()=>{
+    //   await approve();
+    // }}>
+    //   approve
+    // </button>
 
-    <button onClick={async ()=>{
-      await transfer();
-    }}>
-      transfer
-    </button>
+    // <button onClick={async ()=>{
+    //   await transfer();
+    // }}>
+    //   transfer
+    // </button>
 
-    <button onClick={balanceOf}>
-      balanceOf
-    </button>
-    <div>
-      A: {balance}
-    </div>
-    <div>
-      B: {balanceb}
-    </div>
+    // <button onClick={balanceOf}>
+    //   balanceOf
+    // </button>
+    // <div>
+    //   A: {balance}
+    // </div>
+    // <div>
+    //   B: {balanceb}
+    // </div>
 
 
 
-    </>
+    // </>
   )
 }
 

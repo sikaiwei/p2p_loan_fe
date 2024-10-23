@@ -26,6 +26,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from "./navigate.module.css"; // 确保路径正确
+import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Space, Button, Flex } from 'antd';
+import { useWeb3React } from '@web3-react/core';
+import { useContract } from '../useContract';
 
 export default function Navigate() {
     const [activeIndex, setActiveIndex] = useState(0); // 假设默认首页是激活的
@@ -52,6 +56,19 @@ export default function Navigate() {
         localStorage.setItem('activeIndex', index); // 将索引存储到 localStorage
     };
 
+    // 连接钱包
+    const { isActive, account,  connector,  provider } = useWeb3React();
+    const {approve,transfer,balanceOf,balance, balanceb} = useContract();
+    useEffect(()=>{
+      setTimeout(()=>{
+        const active = connector.activate();
+        active.then((r)=>{
+          console.log("active",r);
+        })
+      },1000)
+    },[provider,connector,account])
+
+
     return (
         <nav className={styles.navbar}>
             <div className={styles.brandTitle}>P2P Loan Platform</div>
@@ -69,6 +86,26 @@ export default function Navigate() {
                     </li>
                 ))}
             </ul>
+
+            {/* {isActive ? ('connected') : ('connect wallet')} */}
+
+            <Flex gap="middle" wrap>
+            <Button onClick={async ()=>{
+                await connector.activate();
+                console.log("active",provider);
+                }}
+                color="default" size="middle" variant="dashed" ghost>
+                    {isActive ? ('connected') : ('connect wallet')}
+                {/* connect wallet */}
+            </Button>
+
+            <Avatar
+                style={{
+                    backgroundColor: '#87d068',
+                }}
+                icon={<UserOutlined />}
+            />
+            </Flex>
         </nav>
     );
 }

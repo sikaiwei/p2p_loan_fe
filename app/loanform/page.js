@@ -3,14 +3,95 @@
 import React, { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 
+import { Input, label, Button, Tooltip, Table, Tag, Space,
+    Cascader,
+    DatePicker,
+    Form,
+    InputNumber,
+    Radio,
+    Select,
+    Switch,
+    TreeSelect } from "antd";
 import Link from "next/link";
 import styles from "./page.module.css";
-import { Input, label, Button, Tooltip } from "antd";
 import { Web3Provider } from '../Web3Provider.jsx'
 import { useContract } from '../useContract';
 import Navigate from '../navigate/navigate';
 import Head from 'next/head';
 import useCounterStore from '../../store/useStore';
+
+
+const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'Fundraising Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+    },
+    {
+      title: 'Interest Rate',
+      dataIndex: 'rate',
+      key: 'rate',
+    },
+    {
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+      render: (_, { status }) => (
+        <>
+          {status.map((tag) => {
+            let color = tag.length > 5 ? 'geekblue' : 'green';
+            if (tag === 'loser') {
+              color = 'volcano';
+            }
+            return (
+              <Tag color={color} key={tag}>
+                {tag.toUpperCase()}
+              </Tag>
+            );
+          })}
+        </>
+      ),
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <a>Invite {record.name}</a>
+          <a>Delete</a>
+        </Space>
+      ),
+    },
+  ];
+  const data = [
+    {
+      key: '1',
+      name: 'John Brown',
+      amount: 1000,
+      rate: '1%',
+      status: ['nice', 'developer'],
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      amount: 3000,
+      rate: '1.5%',
+      status: ['loser'],
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      amount: 20000,
+      rate: '0.9%',
+      status: ['cool', 'teacher'],
+    },
+  ];
 
 function Vote_o() {
 // export default function Vote() {
@@ -33,6 +114,19 @@ function Vote_o() {
         );  
       }; 
 
+      // 筹款 表单
+      const [componentSize, setComponentSize] = useState('default');
+      const onFormLayoutChange = ({ size }) => {
+        setComponentSize(size);
+      };
+      const [form] = Form.useForm(); // 创建表单实例
+
+      const onFinish = (values) => {
+        console.log('Received values of form: ', values); // 处理表单数据
+        console.log("name:", values.name)
+      };
+    
+
       // zustand data
       const { count, increment, decrement } = useCounterStore();
     return (
@@ -41,66 +135,74 @@ function Vote_o() {
         <div className={styles.page}>
         <main className={styles.main}>
 
-            <h1>Loan</h1>
-            <label>
-            <p>======================================</p>
+            <h1>Loan Platform</h1>
+            <Table columns={columns} dataSource={data} />
 
-                    添加候选者 &nbsp;
-                    <Input
-                        type="text"
-                        value={candidateName}
-                        onChange={(e) => setcandidateName(e.target.value)}
-                        className={styles.input}
-                    />
-                        <Button 
-                        onClick={
-                            async ()=>{
-                                console.log(candidateName)
-                                await addCandidate(candidateName);
-                            }} 
-                        type="primary" size="middle">
-                        添加
-                    
-                    </Button>
-                <p>======================================</p>
 
-                投票 ： 填写候选者ID，点击投票;
-                    <Input
-                        type="text"
-                        value={candidateId}
-                        onChange={(e) => setcandidateId(e.target.value)}
-                        className={styles.input}
-                    />
-                        <Button 
-                        onClick={
-                            async ()=>{
-                                await vote(candidateId);
-                            }} 
-                        type="primary" size="middle">
-                        投票
-                    
-                    </Button>
-                <p>======================================</p>
-                投票统计： &nbsp;
-                
-                        <Button 
-                        onClick={
-                            async ()=>{
-                                await getAllCandidates();
-                            }} 
-                        type="primary" size="middle">
-                        刷新数据
-                    
-                    </Button>
-                {/* <div>{voteRes.toString()}</div> */}
-                <ListComponent data={voteRes} />  
-                </label>
+            {/* // 表单 */}
+            <p>提交筹款信息：</p>
+            <Form
+                labelCol={{
+                    span: 4,
+                }}
+                wrapperCol={{
+                    span: 14,
+                }}
+                layout="horizontal"
+                initialValues={{
+                    size: componentSize,
+                }}
+                onValuesChange={onFormLayoutChange}
+                size={componentSize}
+                style={{
+                    maxWidth: 600,
+                }}
+                form={form}
+                name="basic"
+                onFinish={onFinish} // 设置表单提交处理函数
+                >
+                <Form.Item label="Form Size" name="size">
+                    <Radio.Group>
+                    <Radio.Button value="small">Small</Radio.Button>
+                    <Radio.Button value="default">Default</Radio.Button>
+                    <Radio.Button value="large">Large</Radio.Button>
+                    </Radio.Group>
+                </Form.Item>
+                <Form.Item label="Name" name="name"
+                    rules={[{ required: true, message: 'Please input your name' }]}
+                >
+                    <Input placeholder="Your Name"/>
+                </Form.Item>
+                <Form.Item label="Amount" name="amount">
+                    <Input placeholder="Amount"/>
+                </Form.Item>
+                <Form.Item label="term/month" name="month">
+                    <Input placeholder="Month Num"/>
+                </Form.Item>
+                <Form.Item label="Interest Rate" name="rate">
+                    <Select placeholder="Select the rate">
+                    <Select.Option value="1%">1%</Select.Option>
+                    <Select.Option value="2%">2%</Select.Option>
+                    <Select.Option value="2%">3%</Select.Option>
+                    <Select.Option value="2%">4%</Select.Option>
+                    <Select.Option value="2%">5%</Select.Option>
+                    </Select>
+                </Form.Item>
 
-                <div>
-                    <p>Count: {count}</p>
-                    <button onClick={increment}>Increment</button>
-                    <button onClick={decrement}>Decrement</button>
-                </div>
+                {/* <Form.Item label="DatePicker">
+                    <DatePicker />
+                </Form.Item>
+                <Form.Item label="InputNumber">
+                    <InputNumber />
+                </Form.Item>
+                <Form.Item label="Switch" valuePropName="checked">
+                    <Switch />
+                </Form.Item> */}
+                <Form.Item label="Commit">
+                    <Button color="primary" variant="outlined" htmlType="submit">Commit</Button>
+                </Form.Item>
+                </Form>
+
 
         </main>
         </div>
