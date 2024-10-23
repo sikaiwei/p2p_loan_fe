@@ -38,6 +38,7 @@ export default function Navigate() {
         }
     }, []);
 
+    // 定义导航栏跳转的路由，和导航栏一一对应
     const linksMap = {
         0: "/",
         1: "/loanform",
