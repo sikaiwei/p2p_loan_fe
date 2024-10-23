@@ -48,6 +48,9 @@ function App() {
     <div>
       B: {balanceb}
     </div>
+
+
+
     </>
   )
 }

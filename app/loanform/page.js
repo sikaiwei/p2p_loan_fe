@@ -10,7 +10,7 @@ import { Web3Provider } from '../Web3Provider.jsx'
 import { useContract } from '../useContract';
 import Navigate from '../navigate/navigate';
 import Head from 'next/head';
-
+import useCounterStore from '../../store/useStore';
 
 function Vote_o() {
 // export default function Vote() {
@@ -32,7 +32,9 @@ function Vote_o() {
           </div>  
         );  
       }; 
-  
+
+      // zustand data
+      const { count, increment, decrement } = useCounterStore();
     return (
         <Web3Provider>
             <Navigate/>
@@ -93,6 +95,12 @@ function Vote_o() {
                 {/* <div>{voteRes.toString()}</div> */}
                 <ListComponent data={voteRes} />  
                 </label>
+
+                <div>
+                    <p>Count: {count}</p>
+                    <button onClick={increment}>Increment</button>
+                    <button onClick={decrement}>Decrement</button>
+                </div>
 
         </main>
         </div>
