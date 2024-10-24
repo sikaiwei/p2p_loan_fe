@@ -181,11 +181,11 @@ function Vote_o() {
                 </Form.Item>
                 <Form.Item label="Interest Rate" name="rate">
                     <Select placeholder="Select the rate">
-                    <Select.Option value="1%">1%</Select.Option>
-                    <Select.Option value="2%">2%</Select.Option>
-                    <Select.Option value="2%">3%</Select.Option>
-                    <Select.Option value="2%">4%</Select.Option>
-                    <Select.Option value="2%">5%</Select.Option>
+                    <Select.Option value="1">1%</Select.Option>
+                    <Select.Option value="2">2%</Select.Option>
+                    <Select.Option value="3">3%</Select.Option>
+                    <Select.Option value="4">4%</Select.Option>
+                    <Select.Option value="5">5%</Select.Option>
                     </Select>
                 </Form.Item>
 
