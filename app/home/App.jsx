@@ -11,7 +11,7 @@ function App() {
     setTimeout(()=>{
       const active = connector.activate();
       active.then((r)=>{
-        console.log("active",r);
+        // console.log("active",r);
       })
     },1000)
   },[provider,connector,account])
