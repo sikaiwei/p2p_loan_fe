@@ -26,13 +26,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from "./navigate.module.css"; // 确保路径正确
-import { UserOutlined } from '@ant-design/icons';
 import { Avatar,  Button, Flex } from 'antd';
 import { useWeb3React } from '@web3-react/core';
 // import { useContract } from '../useContract';
 
 export default function Navigate() {
-    const [activeIndex, setActiveIndex] = useState(0); // 假设默认首页是激活的
+    // const [activeIndex, setActiveIndex] = useState(0); // 假设默认首页是激活的
+    const [activeIndex, setActiveIndex] = useState(); // 假设默认首页是激活的
 
     useEffect(() => {
         // 从 localStorage 中读取 activeIndex 并更新状态
@@ -46,9 +46,8 @@ export default function Navigate() {
     const linksMap = {
         0: "/",
         1: "/loanform",
-        2: "/",
-        3: "/about",
-        4: "/me"
+        2: "/about",
+        3: "/me"
       };
 
     const handleLinkClick = (index) => {
@@ -73,7 +72,7 @@ export default function Navigate() {
         <nav className={styles.navbar}>
             <div className={styles.brandTitle}>P2P Loan Platform</div>
             <ul className={styles.navList}>
-                {["首页", "筹款广场", "公告","关于我们", "我的"].map((item, index) => (
+                {["首页", "筹款广场", "关于我们", "我的"].map((item, index) => (
                     <li key={index}>
                         <Link href={linksMap[index]}>
                             < p
@@ -99,12 +98,8 @@ export default function Navigate() {
                 {/* connect wallet */}
             </Button>
 
-            <Avatar
-                style={{
-                    backgroundColor: '#87d068',
-                }}
-                icon={<UserOutlined />}
-            />
+            {/* <Avatar src={<img src="/header.jpg" alt="avatar" />} /> */}
+            <Avatar src={<img src="/motion2.gif" alt="avatar" />} />
             </Flex>
         </nav>
     );

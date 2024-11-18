@@ -2,17 +2,36 @@
 import { Contract} from '@ethersproject/contracts';
 import ABI from '../artifacts/contracts/GLD.sol/LockModule#Loan.json';
 import { useWeb3React } from '@web3-react/core';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useCounterStore  from '../store/useStore';
-import * as web3 from 'web3'
+import * as web3 from 'web3';
+// import { message } from 'antd';
+
 
 // const tokenAddress = '0xA51926D9B32622ee286cCfB41dBb53FB962E074E';
 // const tokenAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 // sikaiwei dev
 // 2024年10月28日
-const tokenAddress = '0xe4b1cE541bEb0D48b737057819E4266596299fA0';
+// const tokenAddress = '0xe4b1cE541bEb0D48b737057819E4266596299fA0';
 // const tokenAddress = '0x8765C1e53c2Db3d2F9c3d631a86A568dDc6074Bc';
+const tokenAddress = '0x888bbB30c304c609D44A785cF7c01f8D34883869'; // 增加事件监听
+
+
+
+
+// // 发布筹款 
+//  export const getContract = async ()=>{
+//     const signer = provider.getSigner();
+//     if(!provider){
+//         return;
+//     }
+//     const contract = new Contract(tokenAddress, ABI.abi, signer);
+//     return contract;
+
+// }
+
+
 
 
 export function useContract(){
@@ -21,7 +40,7 @@ export function useContract(){
     // const [balanceb, setBalanceb] = useState(0);
     const [launchProjects, setlaunchProjects] = useState([]);
     const [contributeProjects, setContributeProjects] = useState([]);
-    const [allProjects, setallProjects] = useState([]);
+    // const [allProjects, setallProjects] = useState([]);
     const [Projects, setProjects] = useState({
         amount: 0,
         rate: 0,
@@ -34,7 +53,16 @@ export function useContract(){
         currentBill: 0
     });
 
-    const { count, increment, decrement, tabledata, setTableData, billData, setBillData } = useCounterStore();
+    const {  tabledata, setTableData, billData, setBillData,
+             setMsgType, setMsgContent, setMsgDuration } = useCounterStore();
+    
+    // update message
+    const updateMessage = (type, content, duration) => {
+        setMsgType(type);
+        setMsgContent(content);
+        setMsgDuration(duration);
+    }
+
 
     // useEffect(()=>{
     //     const signer = provider.getSigner();
@@ -57,6 +85,43 @@ export function useContract(){
 
 
 
+    // // 合约事件监听
+    const contractLs = useMemo(() => {
+    if (!provider) {
+        return null;
+    }
+    const signer = provider.getSigner();
+    return new Contract(tokenAddress, ABI.abi, signer);
+    }, [provider]);
+
+    // // const contractLs = getContract();
+    // const contractLs = useMemo(() => getContract(), []);
+
+    useEffect(() => {
+        if (contractLs) {
+            // contract.on('MyEvent', (param1, param2,...) => {
+            //     // 当事件触发时，这里的代码会执行
+            //     console.log('MyEvent triggered with params:', param1, param2);
+            // });
+        
+            // 监听合约事件
+            contractLs.on('updateProject', (projects) => {
+            console.log('Adding event listener for updateProject inner 1');
+            console.log('Received updateProject event:', projects);
+            console.log('Adding event listener for updateProject inner 2');
+            });
+
+        }
+        return () => {
+            if (contractLs) {
+                // 清理事件监听器，避免内存泄漏
+                contractLs.off('updateProject');
+            }
+        };
+    }, [contractLs]);
+
+
+
     //   useEffect(() => {
     //     // 从 localStorage 中读取 tabledata 并更新状态
     //     const storedtabledata = localStorage.getItem('tabledata');
@@ -73,10 +138,22 @@ export function useContract(){
             return;
         }
         const contract = new Contract(tokenAddress, ABI.abi, signer);
-        await contract.createProject(amount, rate, term, collectEndTime, repayMethod);
+        await contract.createProject(amount, rate, term, collectEndTime, repayMethod)
+        .then((transactionResponse) => {
+            console.log('Transaction hash:', transactionResponse.hash);
+            updateMessage('loading', '提交进行中..', 0);
+            return transactionResponse.wait();
+          }).then((transactionReceipt) => {
+            console.log('Transaction receipt:', transactionReceipt);
+            updateMessage('success', '提交完成', 2);
+
+
+          }).catch((error) => {
+            console.error('Error:', error);
+            updateMessage('error', '提交失败', 2);
+          });
     }
 
-    
     // 出资 contribute
     const contribute = async (projectsPid, projectsvalue)=>{
         const signer = provider.getSigner();
@@ -87,11 +164,14 @@ export function useContract(){
         await contract.contribute(projectsPid, { from: account, value: projectsvalue })
          .then((transactionResponse) => {
             console.log('Transaction hash:', transactionResponse.hash);
+            updateMessage('loading', '交易进行中..', 0);
             return transactionResponse.wait();
           }).then((transactionReceipt) => {
             console.log('Transaction receipt:', transactionReceipt);
+            updateMessage('success', '交易完成', 2);
           }).catch((error) => {
             console.error('Error:', error);
+            updateMessage('error', '交易失败', 2);
           });
     }
 
@@ -143,14 +223,16 @@ export function useContract(){
     const revocateProject = async (pid)=>{
         const contract = new Contract(tokenAddress, ABI.abi, provider.getSigner());
         let rs = await contract.revocateProject(pid);
-        rs = await rs.wait();
+        await rs.wait();
+        // rs = await rs.wait();
     }
 
     //确认
     const confirmProject = async (pid)=>{
         const contract = new Contract(tokenAddress, ABI.abi, provider.getSigner());
         let rs = await contract.confirm(pid);
-        rs = await rs.wait();
+        await rs.wait();
+        // rs = await rs.wait();
     }
 
     function respToBiil(r){
@@ -284,13 +366,24 @@ export function useContract(){
         }
         const contract = new Contract(tokenAddress, ABI.abi, signer);
         await contract.repay(projectsPid, { from: account, value: projectsvalue })
+        // .then((transactionResponse) => {
+        // console.log('Transaction hash:', transactionResponse.hash);
+        // return transactionResponse.wait();
+        // }).then((transactionReceipt) => {
+        // console.log('Transaction receipt:', transactionReceipt);
+        // }).catch((error) => {
+        // console.error('Error:', error);
+        // });
         .then((transactionResponse) => {
         console.log('Transaction hash:', transactionResponse.hash);
+        updateMessage('loading', '交易进行中..', 0);
         return transactionResponse.wait();
         }).then((transactionReceipt) => {
         console.log('Transaction receipt:', transactionReceipt);
+        updateMessage('success', '交易完成', 2);
         }).catch((error) => {
         console.error('Error:', error);
+        updateMessage('error', '交易失败', 2);
         });
     }
 
@@ -309,7 +402,7 @@ export function useContract(){
         getProjects,
         Projects,
         getAllProjects,
-        allProjects,
+        // allProjects,
         contribute,
         getBill,
         repay
